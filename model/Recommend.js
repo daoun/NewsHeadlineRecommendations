@@ -9,23 +9,21 @@ var connection = mysql.createConnection({
 	database: 'command',
 	timeout : 60000
 });
+connection.connect(function(err) {
+	// in case of error
+	if(err){
+		console.log(err);
+		console.log(err.fatal);
+	} else {
+		console.log("connection successful");
+	}
+});
 
-var Recommend = module.exports = function Recommend(){
-	// connect to mysql
-	
-}
+var Recommend = module.exports = function Recommend(){}
+
 async function getNewsFromDB(date){
 	return new Promise(async resolve => {
-		await connection.connect(function(err) {
-			// in case of error
-			if(err){
-				console.log(err);
-				console.log(err.fatal);
-			} else {
-				console.log("connection successful");
-			}
-		});
-
+		
 		$query = 'select * from NewsHeadlines where publication_date="' + date + '";';
 	
 		await connection.query($query, function(err, rows, fields) {
@@ -34,32 +32,65 @@ async function getNewsFromDB(date){
 				console.log(err);
 				return;
 			}
-			console.log("Query succesfully executed: ");
 
-			resolve(rows);
+			// get news headlines from database and store in array of NewsHeadlines
+			let recommends = [];
+			
+			for(var element of rows){
+				recommends.push(new NewsHeadline(element.id, element.title, element.abstract, element.preference_id, element.language, element.publication_date, element.author));
+			}
+			resolve(recommends);
+		});
+	}) 
+}
+
+async function getEmployeesFromDB(){
+	return new Promise(async resolve => {
+		
+		$query = 'select * from Employees;';
+		await connection.query($query, function(err, rows, fields) {
+			if(err){
+				console.log("An error ocurred performing the query.");
+				console.log(err);
+				return;
+			}
+
+			// get employees from database and store in array of Employees
+			let employees = [];
+			for(var element of rows){
+				employees.push(new Employee(element.id, element.firstName, element.lastName, element.gender, element.city, element.country, element.role, element.department));
+			}
+			resolve(employees);
 			
 		});
 	}) 
 }
 
 
-
-
 Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(month, date, year) {
 	
+	let recommends = []
+
+	// get array of employees from database
+	let employees = await getEmployeesFromDB();
+	console.log("employees length="+ employees.length);
+
+	// get news headlines by given date, and store in recommends array 
+	// which holds the news headline and array of recommended employees
+	let pub_date = month + "/" + date + "/" + ((year < 100) ? year + 2000 : year);
+	let headlines = await getNewsFromDB(pub_date);
 	
+	// iterate through headlines and match recommendations to employee
+	for(var element of headlines){
+		//var headline = new NewsHeadline(element.id, element.title, element.abstract, element.preference_id, element.language, element.publication_date, element.author);
+		console.log(element);
+		recommends.push({"headline": element, "employees" :[]});
 
-	var pub_date = month + "/" + date + "/" + ((year < 100) ? year + 2000 : year);
-
-	let newsFromDB = await getNewsFromDB(pub_date);
-
-	//console.log(newsFromDB);
-	for(var news of newsFromDB){
-		console.log(news.title);
+		
 	}
+	console.log("recommends length="+ recommends.length);
 
-
-	//return "Employee "+ this.id + ": " + this.name + ", " + this.location + ", " + this.role + ", " + this.department;
+	return {"employees": employees, "recommendations": recommends};
 };
 
 
