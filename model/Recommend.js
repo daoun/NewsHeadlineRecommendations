@@ -2,23 +2,6 @@ const Employee = require('./employee');
 const NewsHeadline = require('./newsheadline');
 const mysql = require('mysql');
 
-var Employee = module.exports = function Employee(id, firstName, lastName, gender, city, country, role, department){
-	this.id = id;
-	this.firstName = firstName;
-	this.lastName = lastName;
-	this.name = firstName + " " +lastName;
-	this.gender = gender;
-	this.city = city;
-	this.country = country;
-	this.location = city + ", " + country;
-	this.role = role;
-	this.department = department;
-}
-
-Employee.prototype.toString = function toString() {
-	return "Employee "+ this.id + ": " + this.name + ", " + this.location + ", " + this.role + ", " + this.department;
-};
-
 var connection = mysql.createConnection({
 	host	: 'voicecommand.cno5r5dyegie.us-east-1.rds.amazonaws.com',
 	user	: 'daoun',
@@ -27,17 +10,61 @@ var connection = mysql.createConnection({
 	timeout : 60000
 });
 
-// connect to mysql
-connection.connect(function(err) {
-	// in case of error
-	if(err){
-		console.log(err);
-		console.log(err.fatal);
-	} else {
-		console.log("connection successful");
-	}
-});
+var Recommend = module.exports = function Recommend(){
+	// connect to mysql
+	
+}
+async function getNewsFromDB(date){
+	return new Promise(async resolve => {
+		await connection.connect(function(err) {
+			// in case of error
+			if(err){
+				console.log(err);
+				console.log(err.fatal);
+			} else {
+				console.log("connection successful");
+			}
+		});
 
+		$query = 'select * from NewsHeadlines where publication_date="' + date + '";';
+	
+		await connection.query($query, function(err, rows, fields) {
+			if(err){
+				console.log("An error ocurred performing the query.");
+				console.log(err);
+				return;
+			}
+			console.log("Query succesfully executed: ");
+
+			resolve(rows);
+			
+		});
+	}) 
+}
+
+
+
+
+Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(month, date, year) {
+	
+	
+
+	var pub_date = month + "/" + date + "/" + ((year < 100) ? year + 2000 : year);
+
+	let newsFromDB = await getNewsFromDB(pub_date);
+
+	//console.log(newsFromDB);
+	for(var news of newsFromDB){
+		console.log(news.title);
+	}
+
+
+	//return "Employee "+ this.id + ": " + this.name + ", " + this.location + ", " + this.role + ", " + this.department;
+};
+
+
+
+/*
 $query = 'select * from NewsHeadlines where publication_date="7/14/2019";';
 connection.query($query, function(err, rows, fields) {
 	//console.log($query);
@@ -52,7 +79,10 @@ connection.query($query, function(err, rows, fields) {
 
 	console.log(rows[0].title);
 
-});
+}); 
+*/
+
+
 
 /*
 

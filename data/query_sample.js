@@ -21,14 +21,13 @@ $add_query =
 
 
 
-
-$query = 'Select * from NewsHeadlines;';
+$query = 'Select * from NewsHeadlines where publication_date="7/1/2019";';
 $delete_query = 'Delete from NewsHeadlines where id=1;';
 $drop = "drop table NewsHeadlines;"
 
 $create_table_query = 'CREATE TABLE NewsHeadlines ('+
   'newsheadlines_id INT(6) UNSIGNED AUTO_INCREMENT, '+
-  'title VARCHAR(30) NOT NULL, '+
+  'title VARCHAR(150) NOT NULL, '+
   'abstract VARCHAR(400) NOT NULL, '+
   'preference_id VARCHAR(30) NOT NULL, '+
   'language VARCHAR(30) NOT NULL, '+
@@ -42,7 +41,6 @@ $add_query =
 '("World Trade Center Arts Project Finds New President", "Leslie Koch, who led Governors Island, will go to the Perelman Center, the final piece of the plan to revive the Lower Manhattan site.", 3, "German", "7/9/2019", "Trumaine Mangon"),' + 
 '("Jack Viertel Stepping Down at Encores! After 20 Years as Leader", "A tenure that included 60 concert presentations of classic shows and led to several Broadway productions will conclude with “Thoroughly Modern Millie.”", 3, "Spanish", "6/22/2019", "Bordy Buesden"),' + 
 '("‘Beautiful’ to Close at the End of Octobe", "The Carole King musical has grossed nearly $250 million since opening on Broadway in 2014.", 3, "English", "6/14/2019", "Tamara Fayerman");';
-
 
 
 

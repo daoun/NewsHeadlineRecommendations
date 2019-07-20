@@ -1,0 +1,24 @@
+{
+  "name": "NewsRecommendation",
+  "version": "1.0.0",
+  "description": "Retrieved news headlines from: \thttps://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html",
+  "main": "index.js",
+  "dependencies": {
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daoun/NewsHeadlineRecommendations.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daoun/NewsHeadlineRecommendations/issues"
+  },
+  "homepage": "https://github.com/daoun/NewsHeadlineRecommendations#readme"
+}

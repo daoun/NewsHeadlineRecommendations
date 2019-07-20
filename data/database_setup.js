@@ -21,13 +21,13 @@ connection.connect(function(err) {
   }
 });
 
-$query = 'Select * from NewsHeadlines;';
+$query = 'Select * from NewsHeadlines where publication_date="7/1/2019";';
 $delete_query = 'Delete from NewsHeadlines where id=1;';
 $drop = "drop table NewsHeadlines;"
 
 $create_table_query = 'CREATE TABLE NewsHeadlines ('+
   'newsheadlines_id INT(6) UNSIGNED AUTO_INCREMENT, '+
-  'title VARCHAR(30) NOT NULL, '+
+  'title VARCHAR(150) NOT NULL, '+
   'abstract VARCHAR(400) NOT NULL, '+
   'preference_id VARCHAR(30) NOT NULL, '+
   'language VARCHAR(30) NOT NULL, '+
