@@ -2,43 +2,57 @@ const Employee = require('./employee');
 const NewsHeadline = require('./newsheadline');
 const mysql = require('mysql');
 
+var Employee = module.exports = function Employee(id, firstName, lastName, gender, city, country, role, department){
+	this.id = id;
+	this.firstName = firstName;
+	this.lastName = lastName;
+	this.name = firstName + " " +lastName;
+	this.gender = gender;
+	this.city = city;
+	this.country = country;
+	this.location = city + ", " + country;
+	this.role = role;
+	this.department = department;
+}
 
+Employee.prototype.toString = function toString() {
+	return "Employee "+ this.id + ": " + this.name + ", " + this.location + ", " + this.role + ", " + this.department;
+};
 
 var connection = mysql.createConnection({
-  host     : 'voicecommand.cno5r5dyegie.us-east-1.rds.amazonaws.com',
-  user     : 'daoun',
-  password : 'welcome123',
-  database : 'command',
-  timeout: 60000
+	host	: 'voicecommand.cno5r5dyegie.us-east-1.rds.amazonaws.com',
+	user	: 'daoun',
+	password: 'welcome123',
+	database: 'command',
+	timeout : 60000
 });
 
 // connect to mysql
 connection.connect(function(err) {
-  // in case of error
-  if(err){
-    console.log(err);
-    console.log(err.fatal);
-  } else {
-    console.log("connection successful");
-  }
+	// in case of error
+	if(err){
+		console.log(err);
+		console.log(err.fatal);
+	} else {
+		console.log("connection successful");
+	}
 });
 
 $query = 'select * from NewsHeadlines where publication_date="7/14/2019";';
 connection.query($query, function(err, rows, fields) {
-  //console.log($query);
-  if(err){
-    console.log("An error ocurred performing the query.");
-    console.log(err);
-    return;
-  }
+	//console.log($query);
+	if(err){
+		console.log("An error ocurred performing the query.");
+		console.log(err);
+		return;
+	}
 
-  console.log("Query succesfully executed: ");
-  console.log("length=" + rows.length);
+	console.log("Query succesfully executed: ");
+	console.log("length=" + rows.length);
 
-  console.log(rows[0].title);
+	console.log(rows[0].title);
 
 });
-
 
 /*
 
@@ -53,5 +67,4 @@ console.log(news.toString());
 console.log(news.date());
 //console.log(new Date(2019, 2, 12));
 */
-
 
