@@ -1,5 +1,6 @@
 const Employee = require('./employee');
 const NewsHeadline = require('./newsheadline');
+const Util = require('./util');
 const mysql = require('mysql');
 
 var connection = mysql.createConnection({
@@ -19,7 +20,10 @@ connection.connect(function(err) {
 	}
 });
 
-var Recommend = module.exports = function Recommend(){}
+var Recommend = module.exports = function Recommend(){
+
+	console.log(Util.preference[1]);
+}
 
 async function getNewsFromDB(date){
 	return new Promise(async resolve => {
@@ -58,12 +62,24 @@ async function getEmployeesFromDB(){
 			// get employees from database and store in array of Employees
 			let employees = [];
 			for(var element of rows){
-				employees.push(new Employee(element.id, element.firstName, element.lastName, element.gender, element.city, element.country, element.role, element.department));
+				//console.log(element);
+				console.log(element.job_title + ", " + element.department);
+				
+				/*if(element.job_title.toLowerCase().indexOf("engineer") > -1 || element.department.toLowerCase().indexOf("engineer") > -1 ){
+					console.log(element.id);
+				} */
+				employees.push(new Employee(element.employee_id, element.firstName, element.lastName, element.gender, element.city, element.country, element.job_title, element.department));
 			}
 			resolve(employees);
 			
 		});
 	}) 
+}
+
+function getRecommendations(headlines, employees){
+
+
+	return [];
 }
 
 
@@ -83,8 +99,9 @@ Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(m
 	// iterate through headlines and match recommendations to employee
 	for(var element of headlines){
 		//var headline = new NewsHeadline(element.id, element.title, element.abstract, element.preference_id, element.language, element.publication_date, element.author);
-		console.log(element);
-		recommends.push({"headline": element, "employees" :[]});
+		//console.log(element);
+		var recs = getRecommendations(element, employees);
+		recommends.push({"headline": element, "employees" :recs});
 
 		
 	}
