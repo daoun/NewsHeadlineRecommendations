@@ -96,17 +96,16 @@ async function getNewsFromDB(date){
 async function getPreferenceToEmployeeListDB(){
 	return new Promise(async resolve => {
 		
-		$query = 'select * from EmployeeNewsPreferences;';
-		//console.log($query);
-		await connection.query($query, function(err, rows2, fields) {
+		const query = 'select * from EmployeeNewsPreferences;';
+		
+		await connection.query(query, function(err, rows2, fields) {
 			if(err){
 				console.log("An error ocurred performing the query.");
 				console.log(err);
 				return;
 			}
-			// get employees from database and store in array of Employees
-			console.log(rows2[0], rows2[1]);
-
+			
+			// organize into object according to preference_id
 			let preferences = {};
 			rows2.forEach(function(pref){
 				if(preferences[pref.preference_id] == undefined){
@@ -116,8 +115,6 @@ async function getPreferenceToEmployeeListDB(){
 					preferences[pref.preference_id].push(pref.employee_id);
 				}
 			});
-			//console.log(JSON.stringify(preferences));
-
 			resolve(preferences);
 		});
 
