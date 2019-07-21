@@ -1,15 +1,12 @@
 const Employee = require('./employee');
 const NewsHeadline = require('./newsheadline');
-const Util = require('./util');
 const mysql = require('mysql');
+var fs = require("fs");
 
-var connection = mysql.createConnection({
-	host	: 'voicecommand.cno5r5dyegie.us-east-1.rds.amazonaws.com',
-	user	: 'daoun',
-	password: 'welcome123',
-	database: 'command',
-	timeout : 60000
-});
+var contents = fs.readFileSync("../database/config.json");
+var cred = JSON.parse(contents);
+
+var connection = mysql.createConnection(cred);
 connection.connect(function(err) {
 	// in case of error
 	if(err){

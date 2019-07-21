@@ -1,14 +1,12 @@
 // Get the mysql service
 var mysql = require('mysql');
+var fs = require("fs");
+
+var contents = fs.readFileSync("config.json");
+var cred = JSON.parse(contents);
 
 // Add the credentials to access your database
-var connection = mysql.createConnection({
-  host     : 'voicecommand.cno5r5dyegie.us-east-1.rds.amazonaws.com',
-  user     : 'daoun',
-  password : 'welcome123',
-  database : 'command',
-  timeout: 60000
-});
+var connection = mysql.createConnection(cred);
 
 // connect to mysql
 connection.connect(function(err) {
@@ -21,7 +19,7 @@ connection.connect(function(err) {
   }
 });
 
-$query = "Select * from Employees;";
+$query = 'Select * from NewsHeadlines where publication_date="6/2/2019";';
 
 connection.query($query, function(err, rows, fields) {
   console.log($query);

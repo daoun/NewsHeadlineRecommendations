@@ -4,6 +4,7 @@
   "description": "Retrieved news headlines from: \thttps://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html",
   "main": "index.js",
   "dependencies": {
+    "fs": "0.0.1-security",
     "mysql": "^2.17.1"
   },
   "devDependencies": {},

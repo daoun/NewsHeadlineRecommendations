@@ -9,7 +9,7 @@ async function getResult(){
 		console.log("Please specify the date. Ex. 7/1/2019");
 		return;
 	}
-	
+
 	let result = await rec.matchNewsToEmployees(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
 	
 	// print out result
@@ -25,7 +25,7 @@ async function getResult(){
 }
 	
 function getDateArg(){
-	console.log(process.argv.length);
+	
 	if(process.argv.length <= 2){
 		return [];
 	} else {
