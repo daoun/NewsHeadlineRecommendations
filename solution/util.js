@@ -27,6 +27,7 @@ module.exports = {
 		"Fashion","Business","Science","Health",
 		"Sports","Travel","Weather"
 	],
+	/*
 	preferredJobs:[
 		[],
 		"Politics",[],
@@ -41,7 +42,7 @@ module.exports = {
 		"Weather"[]
 		
 		
-	]
+	] */
 	countries: [
 		"United States","Canada","Mexico",
 		"Brazil","Spain","Italy","France",

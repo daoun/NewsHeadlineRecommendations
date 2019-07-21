@@ -22,7 +22,7 @@ connection.connect(function(err) {
 
 var Recommend = module.exports = function Recommend(){
 
-	console.log(Util.preference[1]);
+	//console.log(Util.preference[1]);
 }
 
 async function getNewsFromDB(date){
@@ -48,11 +48,34 @@ async function getNewsFromDB(date){
 	}) 
 }
 
+async function getEmployeeNewsPreferences(id){
+	return new Promise(async resolve => {
+		
+		$query = 'select * from EmployeeNewsPreferences where employee_id=' + id + ';';
+		//console.log($query);
+		await connection.query($query, function(err, rows2, fields) {
+			if(err){
+				console.log("An error ocurred performing the query.");
+				console.log(err);
+				return;
+			}
+			// get employees from database and store in array of Employees
+			let pref = [];
+			for(var ele2 of rows2){
+				pref.push(ele2.preference_id);
+			}
+			resolve(pref);
+					
+		});
+
+	}) 
+}
+
 async function getEmployeesFromDB(){
 	return new Promise(async resolve => {
 		
 		$query = 'select * from Employees;';
-		await connection.query($query, function(err, rows, fields) {
+		await connection.query($query, async function(err, rows, fields) {
 			if(err){
 				console.log("An error ocurred performing the query.");
 				console.log(err);
@@ -61,25 +84,47 @@ async function getEmployeesFromDB(){
 
 			// get employees from database and store in array of Employees
 			let employees = [];
+			
+			/* Get info for all employees
 			for(var element of rows){
 				//console.log(element);
-				console.log(element.job_title + ", " + element.department);
-				
-				/*if(element.job_title.toLowerCase().indexOf("engineer") > -1 || element.department.toLowerCase().indexOf("engineer") > -1 ){
-					console.log(element.id);
-				} */
-				employees.push(new Employee(element.employee_id, element.firstName, element.lastName, element.gender, element.city, element.country, element.job_title, element.department));
+				var pref = await getEmployeeNewsPreferences(element.id)
+
+				employees.push(
+					new Employee(
+						element.id, element.first_name, element.last_name, 
+						element.gender, element.city, element.country, 
+						element.job_title, element.department,pref
+					)
+				);
+			} 
+			*/
+
+			for(var i = 0; i <1000; i++){
+				var element = rows[i];
+				var pref = await getEmployeeNewsPreferences(element.id)
+
+				employees.push(
+					new Employee(element.id, element.first_name, element.last_name, 
+						element.gender, element.city, element.country, 
+						element.job_title, element.department,pref
+					)
+				);
 			}
+
+			//console.log(employees.length);
+			//console.log(employees[0]);
 			resolve(employees);
 			
 		});
 	}) 
 }
 
-function getRecommendations(headlines, employees){
-
-
-	return [];
+function getRecommendations(headline, employees){
+	var recommendationList = [];
+	while
+	if(headline.preference_id == )
+	return recommendationList;
 }
 
 
@@ -88,8 +133,12 @@ Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(m
 	let recommends = []
 
 	// get array of employees from database
+	var start = Date.now();
 	let employees = await getEmployeesFromDB();
-	console.log("employees length="+ employees.length);
+	var end = Date.now();
+
+	console.log("time passed=" + (end-start));
+	//console.log("employees length="+ employees.length);
 
 	// get news headlines by given date, and store in recommends array 
 	// which holds the news headline and array of recommended employees
@@ -98,14 +147,15 @@ Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(m
 	
 	// iterate through headlines and match recommendations to employee
 	for(var element of headlines){
-		//var headline = new NewsHeadline(element.id, element.title, element.abstract, element.preference_id, element.language, element.publication_date, element.author);
-		//console.log(element);
+		
 		var recs = getRecommendations(element, employees);
-		recommends.push({"headline": element, "employees" :recs});
+		recommends.push(
+			{"headline": element, "employees" :[]}
+		);
 
 		
 	}
-	console.log("recommends length="+ recommends.length);
+	//console.log("recommends length="+ recommends.length);
 
 	return {"employees": employees, "recommendations": recommends};
 };

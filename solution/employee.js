@@ -1,4 +1,4 @@
-var Employee = module.exports = function Employee(id, firstName, lastName, gender, city, country, role, department){
+var Employee = module.exports = function Employee(id, firstName, lastName, gender, city, country, role, department, preferences){
 	this.id = id;
 	this.firstName = firstName;
 	this.lastName = lastName;
@@ -9,6 +9,7 @@ var Employee = module.exports = function Employee(id, firstName, lastName, gende
 	this.location = city + ", " + country;
 	this.role = role;
 	this.department = department;
+	this.newspreferences = preferences;
 }
 
 Employee.prototype.toString = function toString() {
