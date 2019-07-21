@@ -1,4 +1,4 @@
-#News Headline Recommendations
+# News Headline Recommendations
 
 Retrieve list of Employees that matches the News Headline for the given date.
 
