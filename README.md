@@ -6,6 +6,38 @@ The employees are matched according to the preferences that have decided.
 
 
 
+## Database 
+
+### Tables
+
+**NewsHeadlines** (Stores the news headlines)
+- newsheadlines_id (PRIMARY KEY)
+- title
+- abstract
+- preference_id
+- language
+- publication_date
+- author
+
+**Employees** (Stores the employee's information)
+- id (PRIMARY KEY)
+- first_name 
+- last_name 
+- gender 
+- job_title 
+- department 
+- city 
+- country 
+
+**Preferences** (Stores news preference options such as Technology, Business, Politics, etc.)
+- preference_id
+- preference
+
+**EmployeeNewsPreferences** (Stores the which preferences the employee chose)
+- employee_id
+- preference_id
+
+
 
 Retrieved news headlines from:
 	https://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html
