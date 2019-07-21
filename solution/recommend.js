@@ -16,21 +16,55 @@ connection.connect(function(err) {
 		console.log(err);
 		console.log(err.fatal);
 	} else {
-		console.log("connection successful");
+		//console.log("connection successful");
 	}
 });
 
 var Recommend = module.exports = function Recommend(){
-
-	//console.log(Util.preference[1]);
 }
 
+/**
+ * matches newsheadlines (from specified date) to employees
+ * 
+ * Returns list of recommendations which contains object of headline and 
+ * 			employee list by employee_id )
+ */
+Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(month, date, year) {
+	return new Promise(async resolve => {
+		let recommends = []
+
+		// get list of employees by preferences (object)
+		let preferences = await getPreferenceToEmployeeListDB();
+
+
+		// get array of newsheadlines by given date
+		let pub_date = month + "/" + date + "/" + ((year < 100) ? year + 2000 : year);
+		let headlines = await getNewsFromDB(pub_date);
+		
+
+		// iterate through headlines and match recommendations to employee
+		for(var h = 0; h < headlines.length; h++){
+			var headline = headlines[h];
+			recommends.push(
+				{"headline": headline, "employees" : preferences[headline.preference_id]}
+			);
+		}
+		resolve( recommends );
+	});
+};
+
+
+/**
+ * gets newsheadline by date from the NewsHeadlines table
+ * 
+ * Returns list of NewsHeadline
+ */
 async function getNewsFromDB(date){
 	return new Promise(async resolve => {
 		
-		$query = 'select * from NewsHeadlines where publication_date="' + date + '";';
+		const query = 'select * from NewsHeadlines where publication_date="' + date + '";';
 	
-		await connection.query($query, function(err, rows, fields) {
+		await connection.query(query, function(err, rows, fields) {
 			if(err){
 				console.log("An error ocurred performing the query.");
 				console.log(err);
@@ -38,20 +72,31 @@ async function getNewsFromDB(date){
 			}
 
 			// get news headlines from database and store in array of NewsHeadlines
-			let recommends = [];
+			let news = [];
 			
 			for(var element of rows){
-				recommends.push(new NewsHeadline(element.id, element.title, element.abstract, element.preference_id, element.language, element.publication_date, element.author));
+				news.push(
+					new NewsHeadline(
+						element.newsheadlines_id, element.title, element.abstract, element.preference_id, 
+						element.language, element.publication_date, element.author
+					)
+				);
 			}
-			resolve(recommends);
+			resolve(news);
 		});
 	}) 
 }
 
-async function getEmployeeNewsPreferences(id){
+
+/**
+ * gets preferences of all employees
+ * 
+ * Returns an object (key - preference id, value - list of Employees)
+ */
+async function getPreferenceToEmployeeListDB(){
 	return new Promise(async resolve => {
 		
-		$query = 'select * from EmployeeNewsPreferences where employee_id=' + id + ';';
+		$query = 'select * from EmployeeNewsPreferences;';
 		//console.log($query);
 		await connection.query($query, function(err, rows2, fields) {
 			if(err){
@@ -60,139 +105,23 @@ async function getEmployeeNewsPreferences(id){
 				return;
 			}
 			// get employees from database and store in array of Employees
-			let pref = [];
-			for(var ele2 of rows2){
-				pref.push(ele2.preference_id);
-			}
-			resolve(pref);
-					
+			console.log(rows2[0], rows2[1]);
+
+			let preferences = {};
+			rows2.forEach(function(pref){
+				if(preferences[pref.preference_id] == undefined){
+					preferences[pref.preference_id] =  [];
+					preferences[pref.preference_id].push(pref.employee_id);
+				} else {
+					preferences[pref.preference_id].push(pref.employee_id);
+				}
+			});
+			//console.log(JSON.stringify(preferences));
+
+			resolve(preferences);
 		});
 
 	}) 
 }
 
-async function getEmployeesFromDB(){
-	return new Promise(async resolve => {
-		
-		$query = 'select * from Employees;';
-		await connection.query($query, async function(err, rows, fields) {
-			if(err){
-				console.log("An error ocurred performing the query.");
-				console.log(err);
-				return;
-			}
-
-			// get employees from database and store in array of Employees
-			let employees = [];
-			
-			/* Get info for all employees
-			for(var element of rows){
-				//console.log(element);
-				var pref = await getEmployeeNewsPreferences(element.id)
-
-				employees.push(
-					new Employee(
-						element.id, element.first_name, element.last_name, 
-						element.gender, element.city, element.country, 
-						element.job_title, element.department,pref
-					)
-				);
-			} 
-			*/
-
-			for(var i = 0; i <1000; i++){
-				var element = rows[i];
-				var pref = await getEmployeeNewsPreferences(element.id)
-
-				employees.push(
-					new Employee(element.id, element.first_name, element.last_name, 
-						element.gender, element.city, element.country, 
-						element.job_title, element.department,pref
-					)
-				);
-			}
-
-			//console.log(employees.length);
-			//console.log(employees[0]);
-			resolve(employees);
-			
-		});
-	}) 
-}
-
-function getRecommendations(headline, employees){
-	var recommendationList = [];
-	while
-	if(headline.preference_id == )
-	return recommendationList;
-}
-
-
-Recommend.prototype.matchNewsToEmployees = async function matchNewsToEmployees(month, date, year) {
-	
-	let recommends = []
-
-	// get array of employees from database
-	var start = Date.now();
-	let employees = await getEmployeesFromDB();
-	var end = Date.now();
-
-	console.log("time passed=" + (end-start));
-	//console.log("employees length="+ employees.length);
-
-	// get news headlines by given date, and store in recommends array 
-	// which holds the news headline and array of recommended employees
-	let pub_date = month + "/" + date + "/" + ((year < 100) ? year + 2000 : year);
-	let headlines = await getNewsFromDB(pub_date);
-	
-	// iterate through headlines and match recommendations to employee
-	for(var element of headlines){
-		
-		var recs = getRecommendations(element, employees);
-		recommends.push(
-			{"headline": element, "employees" :[]}
-		);
-
-		
-	}
-	//console.log("recommends length="+ recommends.length);
-
-	return {"employees": employees, "recommendations": recommends};
-};
-
-
-
-/*
-$query = 'select * from NewsHeadlines where publication_date="7/14/2019";';
-connection.query($query, function(err, rows, fields) {
-	//console.log($query);
-	if(err){
-		console.log("An error ocurred performing the query.");
-		console.log(err);
-		return;
-	}
-
-	console.log("Query succesfully executed: ");
-	console.log("length=" + rows.length);
-
-	console.log(rows[0].title);
-
-}); 
-*/
-
-
-
-/*
-
-const employee = new Employee(1, "Christine", "Oh", "Female", "Ridgewood", "United States", "Software Engineer", "Engineering");
-
-console.log(employee.name);
-
-
-const news = new NewsHeadline(2, "title", "abstract", 2, "English", "2/4/2019", "author");
-
-console.log(news.toString());
-console.log(news.date());
-//console.log(new Date(2019, 2, 12));
-*/
 
