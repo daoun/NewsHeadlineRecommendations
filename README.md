@@ -5,6 +5,7 @@ Retrieve list of Employees that matches the News Headline for the given date.
 The employees are matched according to the preferences that have decided.
 
 ## How to run
+From the `solution` directory, run
 
 ```
 node main.js [date]
