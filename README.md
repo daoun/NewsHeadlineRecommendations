@@ -37,7 +37,7 @@ NOTE: News publication date range from 6/1/2019 to 7/20/2019.
 - country 
 
 **Preferences** (Stores news preference options such as Technology, Business, Politics, etc.)
-- preference_id
+- preference_id (PRIMARY KEY)
 - preference
 
 **EmployeeNewsPreferences** (Stores the which preferences the employee chose)
