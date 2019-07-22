@@ -2,7 +2,9 @@ const NewsRecommend = require('./recommend');
 
 let rec = new NewsRecommend();
 
-
+/**
+ * Calls the matchNewsToEmployees function to retrieve matched results
+ */
 async function getResult(){
 	const date = getDateArg();
 	if(date.length == 0){
@@ -23,7 +25,11 @@ async function getResult(){
 	}); 
 	process.exit();
 }
-	
+/**
+ * retrive the command line arguments
+ *
+ * Returns the date as an array 
+ */
 function getDateArg(){
 	
 	if(process.argv.length <= 2){
